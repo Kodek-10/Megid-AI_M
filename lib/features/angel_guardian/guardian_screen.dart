@@ -104,7 +104,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: isDark
-                    ? [MegidaiColors.primary.withOpacity(0.8), MegidaiColors.accent.withOpacity(0.8)]
+                    ? [MegidaiColors.primary.withValues(alpha: 0.8), MegidaiColors.accent.withValues(alpha: 0.8)]
                     : [MegidaiColors.primary, MegidaiColors.accent],
               ),
             ),
@@ -122,7 +122,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
                 Text(
                   'Surveillance active de votre sécurité',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
               ],
@@ -238,7 +238,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: theme.dividerColor.withOpacity(0.4),
+          color: theme.dividerColor.withValues(alpha: 0.4),
         ),
       ),
       child: Column(
@@ -248,7 +248,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
           Text(
             title,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.textTheme.bodySmall?.color?.withOpacity(0.75),
+              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.75),
             ),
           ),
           const SizedBox(height: 6),
@@ -276,7 +276,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
         decoration: BoxDecoration(
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: theme.dividerColor.withOpacity(0.4)),
+          border: Border.all(color: theme.dividerColor.withValues(alpha: 0.4)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,7 +285,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundColor: MegidaiColors.primary.withOpacity(0.15),
+                  backgroundColor: MegidaiColors.primary.withValues(alpha: 0.15),
                   child: Text(
                     guardian['name']![0],
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -307,7 +307,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
                       Text(
                         guardian['relation']!,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                          color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                         ),
                       ),
                     ],
@@ -369,7 +369,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
                 Text(
                   '/100',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                    color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -579,7 +579,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
           Text(
             label,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
             ),
           ),
           Text(
@@ -733,7 +733,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: theme.dividerColor.withOpacity(0.5),
+            color: theme.dividerColor.withValues(alpha: 0.5),
           ),
         ),
         child: Row(
@@ -743,7 +743,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: levelColor.withOpacity(0.1),
+                color: levelColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(50),
               ),
               child: Icon(
@@ -767,7 +767,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
                   Text(
                     log['what'],
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                      color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -776,7 +776,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
                       Text(
                         log['time'],
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                          color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                           fontSize: 10,
                         ),
                       ),
@@ -784,7 +784,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: levelColor.withOpacity(0.1),
+                          color: levelColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -836,7 +836,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: MegidaiColors.primary.withOpacity(0.1),
+                  color: MegidaiColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -861,7 +861,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
           Text(
             label,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
             ),
           ),
           Text(

@@ -1,33 +1,59 @@
 // lib/main.dart
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'services/api_service.dart';
+import 'services/device_service.dart';
+import 'app.dart';
 
-// 'import' = équivalent de 'import' en Python ou 'require' en Node.js
-import 'package:flutter/material.dart';       // Framework Flutter de base
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:firebase_core/firebase_core.dart'; // Firebase (notifications)
-import 'core/theme.dart';                     // Notre thème Megidai
-import 'app.dart';                            // Notre widget racine (à créer)
-
-// 'Future<void>' = fonction asynchrone qui ne retourne rien
-// 'async' = permet d'utiliser 'await' dans la fonction
 Future<void> main() async {
-
-  // WidgetsFlutterBinding.ensureInitialized() DOIT être appelé en premier
-  // quand on fait des opérations asynchrones avant runApp()
-  // Il initialise le moteur Flutter avant que l'app démarre
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialiser Firebase seulement sur mobile (Android, iOS)
-  // Sur le web, Firebase est initialisé automatiquement via le SDK web
-  if (!kIsWeb) {
+  // ── Initialiser Firebase ──────────────────────────────────────────────
+  await Firebase.initializeApp();
+
+  // ── Enregistrer le token FCM au démarrage ────────────────────────────
+  await _initializeNotifications();
+
+  // ── Vérifier la connectivité avec le backend ─────────────────────────
+  final isOnline = await ApiService.isBackendReachable();
+  debugPrint('[Main] Backend accessible : $isOnline');
+
+  runApp(MegidaiApp(isBackendOnline: isOnline));
+}
+
+Future<void> _initializeNotifications() async {
+  final messaging = FirebaseMessaging.instance;
+
+  // Demander la permission de notifications (iOS)
+  await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  // Récupérer le token FCM
+  final fcmToken = await messaging.getToken();
+  if (fcmToken != null) {
+    // Sauvegarder localement
+    await DeviceService.saveFcmToken(fcmToken);
+
+    // Enregistrer sur le backend
+    final deviceId = await DeviceService.getDeviceId();
     try {
-      await Firebase.initializeApp();
+      await ApiService.registerDevice(deviceId, fcmToken);
+      debugPrint('[Main] Appareil enregistré sur le backend');
     } catch (e) {
-      // Firebase non configuré - continue sans Firebase
-      print('Firebase init failed: $e');
+      debugPrint('[Main] Enregistrement backend échoué : $e');
     }
   }
 
-  // runApp() lance l'application Flutter
-  // Elle prend le widget racine en paramètre
-  runApp(const MegidaiApp());
+  // Écouter les rafraîchissements du token FCM
+  messaging.onTokenRefresh.listen((newToken) async {
+    await DeviceService.saveFcmToken(newToken);
+    final deviceId = await DeviceService.getDeviceId();
+    try {
+      await ApiService.registerDevice(deviceId, newToken);
+    } catch (_) {}
+  });
 }

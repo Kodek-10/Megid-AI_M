@@ -17,7 +17,7 @@ class ResilienceScreen extends StatefulWidget {
 }
 
 class _ResilienceScreenState extends State<ResilienceScreen> {
-  double _resilienceScore = 75.0; // Mock score
+  final double _resilienceScore = 75.0; // Mock score
 
   final List<Map<String, dynamic>> _testQuestions = [
     {
@@ -107,7 +107,7 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: isDark
-                      ? [MegidaiColors.primary.withOpacity(0.8), MegidaiColors.secondary.withOpacity(0.8)]
+                      ? [MegidaiColors.primary.withValues(alpha: 0.8), MegidaiColors.secondary.withValues(alpha: 0.8)]
                       : [MegidaiColors.primary, MegidaiColors.secondary],
                 ),
               ),
@@ -125,7 +125,7 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
                   Text(
                     'Évaluez votre niveau de protection',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -141,7 +141,7 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
                   color: theme.cardColor,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: theme.dividerColor.withOpacity(0.5),
+                    color: theme.dividerColor.withValues(alpha: 0.5),
                   ),
                 ),
                 child: Column(
@@ -174,7 +174,7 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
                                 Text(
                                   '/100',
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                                    color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                                   ),
                                 ),
                               ],
@@ -194,7 +194,7 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
                     Text(
                       _getScoreDescription(_resilienceScore),
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -295,7 +295,7 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
                   Text(
                     'Conseil : améliorez ce facteur en suivant les exercices et bonnes pratiques disponibles dans la section Éducation.',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
+                      color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.8),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -313,7 +313,7 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: theme.dividerColor.withOpacity(0.5),
+            color: theme.dividerColor.withValues(alpha: 0.5),
           ),
         ),
         child: Row(
@@ -321,7 +321,7 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: _getScoreColor(score.toDouble()).withOpacity(0.1),
+                color: _getScoreColor(score.toDouble()).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
@@ -345,7 +345,7 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
                   Text(
                     factor['description'],
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                      color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -354,7 +354,7 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: _getScoreColor(score.toDouble()).withOpacity(0.1),
+                color: _getScoreColor(score.toDouble()).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -551,7 +551,7 @@ class _ResilienceTestWidgetState extends State<ResilienceTestWidget> {
           Text(
             'Question ${_currentIndex + 1}/${widget.questions.length}',
             style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
             ),
           ),
           const SizedBox(height: 12),
@@ -581,7 +581,7 @@ class _ResilienceTestWidgetState extends State<ResilienceTestWidget> {
                       color: theme.cardColor,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: theme.dividerColor.withOpacity(0.5),
+                        color: theme.dividerColor.withValues(alpha: 0.5),
                       ),
                     ),
                     child: Row(

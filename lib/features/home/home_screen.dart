@@ -8,10 +8,12 @@ class HomeScreen extends StatefulWidget {
     super.key,
     required this.onThemeToggle,
     required this.isDarkMode,
+    required this.isBackendOnline,
   });
 
   final VoidCallback onThemeToggle;
   final bool isDarkMode;
+  final bool isBackendOnline;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -80,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: isDark
-                      ? [MegidaiColors.primary.withOpacity(0.9), MegidaiColors.secondary.withOpacity(0.9)]
+                      ? [MegidaiColors.primary.withValues(alpha: 0.9), MegidaiColors.secondary.withValues(alpha: 0.9)]
                       : [MegidaiColors.primary, MegidaiColors.secondary],
                 ),
               ),
@@ -98,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     'Votre protection intelligente en un coup d’œil',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.85),
+                      color: Colors.white.withValues(alpha: 0.85),
                     ),
                   ),
                 ],
@@ -172,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide: BorderSide(
-                          color: theme.dividerColor.withOpacity(0.5),
+                          color: theme.dividerColor.withValues(alpha: 0.5),
                         ),
                       ),
                       filled: true,
@@ -209,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             'Historique',
                             style: theme.textTheme.bodySmall?.copyWith(
                               fontWeight: FontWeight.w600,
-                              color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -226,20 +228,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Icon(
                                       Icons.history,
                                       size: 16,
-                                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
+                                      color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
                                       item,
                                       style: theme.textTheme.bodySmall?.copyWith(
-                                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
+                                        color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.8),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
                             );
-                          }).toList(),
+                          }),
                         ],
                       ),
                     ),
@@ -313,14 +315,14 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.dividerColor.withOpacity(0.4)),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.4)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: MegidaiColors.primary.withOpacity(0.12),
+              color: MegidaiColors.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: MegidaiColors.primary, size: 22),
@@ -339,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 subtitle,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.75),
+                  color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.75),
                 ),
               ),
             ],
@@ -373,7 +375,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: MegidaiColors.primary.withOpacity(0.1),
+                  color: MegidaiColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -397,7 +399,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       subtitle,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                        color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -406,24 +408,12 @@ class _HomeScreenState extends State<HomeScreen> {
               Icon(
                 Icons.arrow_forward_ios,
                 size: 16,
-                color: theme.iconTheme.color?.withOpacity(0.5),
+                color: theme.iconTheme.color?.withValues(alpha: 0.5),
               ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  void _analyzeUrl() {
-    final url = _urlController.text.trim();
-    if (url.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Veuillez entrer une URL')),
-      );
-      return;
-    }
-
-    _handleSearch();
   }
 }

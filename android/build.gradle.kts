@@ -1,20 +1,34 @@
-allprojects {
+buildscript {
+    ext.set("kotlin_version", "1.9.22")
     repositories {
-        google()
+        maven { url = uri("https://maven.aliyun.com/repository/google") }
+        maven { url = uri("https://maven.aliyun.com/repository/public") }
         mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:7.3.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${ext.get("kotlin_version")}")
     }
 }
 
-val newBuildDir: Directory =
-    rootProject.layout.buildDirectory
-        .dir("../../build")
-        .get()
-rootProject.layout.buildDirectory.value(newBuildDir)
+allprojects {
+    repositories {
+        maven { url = uri("https://maven.aliyun.com/repository/google") }
+        maven { url = uri("https://maven.aliyun.com/repository/public") }
+        mavenCentral()
+        google()
+    }
+}
+
+val newBuildDir: File = rootProject.layout.buildDirectory.dir("../../build").get().asFile
+rootProject.layout.buildDirectory.set(newBuildDir)
 
 subprojects {
-    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
-    project.layout.buildDirectory.value(newSubprojectBuildDir)
+    val newSubprojectBuildDir: File = newBuildDir.resolve(project.name)
+    project.layout.buildDirectory.set(newSubprojectBuildDir)
 }
+
 subprojects {
     project.evaluationDependsOn(":app")
 }

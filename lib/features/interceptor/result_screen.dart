@@ -51,7 +51,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: theme.brightness == Brightness.dark
-                      ? [MegidaiColors.primary.withOpacity(0.8), MegidaiColors.secondary.withOpacity(0.8)]
+                      ? [MegidaiColors.primary.withValues(alpha: 0.8), MegidaiColors.secondary.withValues(alpha: 0.8)]
                       : [MegidaiColors.primary, MegidaiColors.secondary],
                 ),
               ),
@@ -69,7 +69,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   Text(
                     'Résultats de l\'évaluation de sécurité',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -84,7 +84,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   color: theme.cardColor,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: theme.dividerColor.withOpacity(0.5),
+                    color: theme.dividerColor.withValues(alpha: 0.5),
                   ),
                 ),
                 child: Column(
@@ -95,7 +95,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: theme.dividerColor.withOpacity(0.5),
+                            color: theme.dividerColor.withValues(alpha: 0.5),
                           ),
                         ),
                       ),
@@ -131,7 +131,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                 Text(
                                   DateTime.now().toString().split(' ')[0],
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                                    color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                                   ),
                                 ),
                               ],
@@ -140,7 +140,7 @@ class _ResultScreenState extends State<ResultScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: gradeColor.withOpacity(0.1),
+                              color: gradeColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -176,7 +176,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                   child: Text(
                                     finding['text'],
                                     style: theme.textTheme.bodySmall?.copyWith(
-                                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
+                                      color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.8),
                                     ),
                                   ),
                                 ),
@@ -193,7 +193,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       decoration: BoxDecoration(
                         border: Border(
                           top: BorderSide(
-                            color: theme.dividerColor.withOpacity(0.5),
+                            color: theme.dividerColor.withValues(alpha: 0.5),
                           ),
                         ),
                       ),
@@ -280,7 +280,7 @@ class _ResultScreenState extends State<ResultScreen> {
             height: 8,
             margin: const EdgeInsets.symmetric(horizontal: 2),
             decoration: BoxDecoration(
-              color: active ? color : color.withOpacity(0.3),
+              color: active ? color : color.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(4),
             ),
           ),

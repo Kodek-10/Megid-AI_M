@@ -190,7 +190,7 @@ class _EducationScreenState extends State<EducationScreen> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: isDark
-                    ? [MegidaiColors.primary.withOpacity(0.8), MegidaiColors.secondary.withOpacity(0.8)]
+                    ? [MegidaiColors.primary.withValues(alpha: 0.8), MegidaiColors.secondary.withValues(alpha: 0.8)]
                     : [MegidaiColors.primary, MegidaiColors.secondary],
               ),
             ),
@@ -208,7 +208,7 @@ class _EducationScreenState extends State<EducationScreen> {
                 Text(
                   'Apprenez à vous protéger en ligne',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
               ],
@@ -228,7 +228,7 @@ class _EducationScreenState extends State<EducationScreen> {
                       color: theme.cardColor,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: theme.dividerColor.withOpacity(0.5),
+                        color: theme.dividerColor.withValues(alpha: 0.5),
                       ),
                     ),
                     child: Column(
@@ -244,7 +244,7 @@ class _EducationScreenState extends State<EducationScreen> {
                         Text(
                           entry.key,
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                            color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -267,7 +267,7 @@ class _EducationScreenState extends State<EducationScreen> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      const Color(0xFFFDE68A).withOpacity(0.3),
+                      const Color(0xFFFDE68A).withValues(alpha: 0.3),
                       const Color(0xFFFEF9EB),
                     ],
                   ),
@@ -278,9 +278,9 @@ class _EducationScreenState extends State<EducationScreen> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.quiz,
-                      color: const Color(0xFF92400E),
+                      color: Color(0xFF92400E),
                       size: 24,
                     ),
                     const SizedBox(width: 12),
@@ -305,9 +305,9 @@ class _EducationScreenState extends State<EducationScreen> {
                         ],
                       ),
                     ),
-                    Icon(
+                    const Icon(
                       Icons.play_arrow,
-                      color: const Color(0xFF92400E),
+                      color: Color(0xFF92400E),
                     ),
                   ],
                 ),
@@ -333,7 +333,7 @@ class _EducationScreenState extends State<EducationScreen> {
                       _selectedLevel = level;
                     });
                   },
-                  selectedColor: MegidaiColors.primary.withOpacity(0.15),
+                  selectedColor: MegidaiColors.primary.withValues(alpha: 0.15),
                   backgroundColor: theme.cardColor,
                   labelStyle: theme.textTheme.bodySmall?.copyWith(
                     color: isSelected ? MegidaiColors.primary : theme.textTheme.bodySmall?.color,
@@ -408,7 +408,7 @@ class _EducationScreenState extends State<EducationScreen> {
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: theme.dividerColor.withOpacity(0.5),
+            color: theme.dividerColor.withValues(alpha: 0.5),
           ),
         ),
         child: Column(
@@ -434,7 +434,7 @@ class _EducationScreenState extends State<EducationScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: lesson['color'].withOpacity(0.1),
+                      color: lesson['color'].withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -463,7 +463,7 @@ class _EducationScreenState extends State<EducationScreen> {
                   Text(
                     lesson['description'],
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                      color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                     ),
                   ),
 
@@ -478,13 +478,13 @@ class _EducationScreenState extends State<EducationScreen> {
                           Icon(
                             Icons.access_time,
                             size: 14,
-                            color: theme.iconTheme.color?.withOpacity(0.5),
+                            color: theme.iconTheme.color?.withValues(alpha: 0.5),
                           ),
                           const SizedBox(width: 4),
                           Text(
                             lesson['duration'],
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                             ),
                           ),
                         ],
@@ -492,7 +492,7 @@ class _EducationScreenState extends State<EducationScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: statusColor.withOpacity(0.1),
+                          color: statusColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
@@ -757,7 +757,7 @@ class _QuizWidgetState extends State<QuizWidget> {
           Text(
             'Question ${_currentIndex + 1}/${widget.questions.length}',
             style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
             ),
           ),
           const SizedBox(height: 12),
@@ -787,7 +787,7 @@ class _QuizWidgetState extends State<QuizWidget> {
                       color: theme.cardColor,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: theme.dividerColor.withOpacity(0.5),
+                        color: theme.dividerColor.withValues(alpha: 0.5),
                       ),
                     ),
                     child: Row(

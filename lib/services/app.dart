@@ -10,7 +10,9 @@ import '../features/education/education_screen.dart';     // Modules éducatifs
 
 // Widget racine — Stateful pour gérer le thème
 class MegidaiApp extends StatefulWidget {
-  const MegidaiApp({super.key});
+  const MegidaiApp({super.key, required this.isBackendOnline});
+
+  final bool isBackendOnline;
 
   @override
   State<MegidaiApp> createState() => _MegidaiAppState();
@@ -18,6 +20,8 @@ class MegidaiApp extends StatefulWidget {
 
 class _MegidaiAppState extends State<MegidaiApp> {
   ThemeMode _themeMode = ThemeMode.dark; // Commence en mode sombre
+
+  bool get isBackendOnline => widget.isBackendOnline;
 
   void _toggleTheme() {
     setState(() {
@@ -39,6 +43,7 @@ class _MegidaiAppState extends State<MegidaiApp> {
         builder: (context, state) => HomeScreen(
           onThemeToggle: _toggleTheme,
           isDarkMode: _themeMode == ThemeMode.dark,
+          isBackendOnline: isBackendOnline,
         ),
       ),
       GoRoute(
