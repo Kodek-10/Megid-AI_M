@@ -4,7 +4,7 @@ import 'package:megidai/services/app.dart';
 
 void main() {
   testWidgets('App launches', (WidgetTester tester) async {
-    await tester.pumpWidget(const MegidaiApp());
+    await tester.pumpWidget(const MegidaiApp(isBackendOnline: true));
     expect(find.text('Megidai'), findsAny);
   });
 }

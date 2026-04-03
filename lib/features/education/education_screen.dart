@@ -239,9 +239,9 @@ class _EducationScreenState extends State<EducationScreen> {
                 ),
                 child: Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.quiz,
-                      color: const Color(0xFF92400E),
+                      color: Color(0xFF92400E),
                       size: 24,
                     ),
                     const SizedBox(width: 12),
@@ -266,9 +266,9 @@ class _EducationScreenState extends State<EducationScreen> {
                         ],
                       ),
                     ),
-                    Icon(
+                    const Icon(
                       Icons.play_arrow,
-                      color: const Color(0xFF92400E),
+                      color: Color(0xFF92400E),
                     ),
                   ],
                 ),
@@ -685,4 +685,4 @@ class _EducationScreenState extends State<EducationScreen> {
     );
   }
 }
-
+
