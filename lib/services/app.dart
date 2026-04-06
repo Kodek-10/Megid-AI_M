@@ -8,14 +8,27 @@ import '../features/angel_guardian/guardian_screen.dart'; // Ange Gardien
 import '../features/resilience/resilience_screen.dart';   // Score de résilience
 import '../features/education/education_screen.dart';     // Modules éducatifs
 
-// Widget racine — 'const' car ce widget ne changera jamais
-class MegidaiApp extends StatelessWidget {
+// Widget racine — Stateful pour gérer le thème
+class MegidaiApp extends StatefulWidget {
   const MegidaiApp({super.key});
+
+  @override
+  State<MegidaiApp> createState() => _MegidaiAppState();
+}
+
+class _MegidaiAppState extends State<MegidaiApp> {
+  ThemeMode _themeMode = ThemeMode.dark; // Commence en mode sombre
+
+  void _toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    });
+  }
 
   // _router définit toutes les routes (écrans) de l'application
   // 'static' : appartient à la classe, pas aux instances
   // 'final' : ne peut pas être réassigné après initialisation
-  static final GoRouter _router = GoRouter(
+  GoRouter get _router => GoRouter(
     // Route initiale : l'écran qui s'affiche au démarrage
     initialLocation: '/',
 
@@ -23,7 +36,7 @@ class MegidaiApp extends StatelessWidget {
     routes: [
       GoRoute(
         path: '/',               // URL de la route
-        builder: (context, state) => const HomeScreen(),
+        builder: (context, state) => HomeScreen(onThemeToggle: _toggleTheme, isDarkMode: _themeMode == ThemeMode.dark),
       ),
       GoRoute(
         path: '/result',         // Affiché après analyse d'un lien
@@ -56,7 +69,9 @@ class MegidaiApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Megidai - Bouclier Numérique',
-      theme: MegidaiTheme.darkTheme,
+      theme: MegidaiTheme.lightTheme,
+      darkTheme: MegidaiTheme.darkTheme,
+      themeMode: _themeMode,
       routerConfig: _router,
       debugShowCheckedModeBanner: false,
     );
