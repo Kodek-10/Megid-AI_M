@@ -1,0 +1,56 @@
+name: megidai                          # Nom interne de l'app (sans espaces)
+description: Bouclier numerique Privacy-First
+publish_to: 'none'                     # On ne publie pas sur pub.dev
+version: 1.0.0+1                       # version_humaine+version_build
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'               # Version minimale de Dart requise
+
+dependencies:
+  flutter:
+    sdk: flutter                        # Le framework Flutter lui-même
+
+  # ── Gestion des permissions Android/iOS ──────────────────────────
+  # Permet de demander READ_SMS, Accessibilité, etc.
+  permission_handler: ^11.3.0
+
+  # ── Lecture des SMS ───────────────────────────────────────────────
+  # Accès aux SMS entrants et existants
+  # telephony: ^0.2.0  # Temporairement désactivé pour compatibilité
+
+  # ── Modèles TFLite (IA locale sur le téléphone) ──────────────────
+  # Permet d'exécuter MobileBERT et Random Forest directement sur l'appareil
+  tflite_flutter: ^0.10.4
+
+  # ── Requêtes HTTP vers le backend FastAPI ─────────────────────────
+  # Pour envoyer les gradients et recevoir les mises à jour du modèle
+  http: ^1.2.0
+  dio: ^5.4.0                          # http plus puissant (timeouts, interceptors)
+
+  # ── Base de données locale chiffrée ──────────────────────────────
+  # Stocke la liste blanche, le cache URLs, l'historique — tout chiffré AES-256
+  sqflite: ^2.3.2
+
+  # ── Notifications push (Mode Ange Gardien) ────────────────────────
+  # Firebase pour recevoir les alertes sur le téléphone de l'Ange Gardien
+  firebase_core: ^2.27.0
+  firebase_messaging: ^14.7.19
+
+  # ── Stockage sécurisé des données sensibles ───────────────────────
+  # Pour stocker le token Firebase, les préférences de l'utilisateur
+  flutter_secure_storage: ^9.0.0
+
+  # ── Navigation entre les écrans ───────────────────────────────────
+  # go_router est le système de navigation recommandé par Google
+  go_router: ^13.2.0
+
+  # ── Icônes Material Design ────────────────────────────────────────
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter                        # Tests unitaires et d'intégration
+  flutter_lints: ^3.0.0                 # Règles de linting recommandées
+
+flutter:
+  uses-material-design: true
