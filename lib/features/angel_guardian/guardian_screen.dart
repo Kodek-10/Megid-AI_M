@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import '../../core/theme.dart';
 
 class GuardianScreen extends StatefulWidget {
-  const GuardianScreen({super.key});
+  const GuardianScreen({
+    super.key,
+    required this.onThemeToggle,
+    required this.isDarkMode,
+  });
+
+  final VoidCallback onThemeToggle;
+  final bool isDarkMode;
 
   @override
   State<GuardianScreen> createState() => _GuardianScreenState();
@@ -48,6 +55,18 @@ class _GuardianScreenState extends State<GuardianScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ange Gardien'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+          tooltip: 'Retour',
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            onPressed: widget.onThemeToggle,
+            tooltip: widget.isDarkMode ? 'Mode jour' : 'Mode nuit',
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -60,8 +79,8 @@ class _GuardianScreenState extends State<GuardianScreen> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: isDark
-                    ? [const Color(0xFF0F2A6E), const Color(0xFF1B4FD8)]
-                    : [const Color(0xFF3B82F6), const Color(0xFF1D4ED8)],
+                    ? [MegidaiColors.primary.withOpacity(0.8), MegidaiColors.accent.withOpacity(0.8)]
+                    : [MegidaiColors.primary, MegidaiColors.accent],
               ),
             ),
             child: Column(
@@ -114,33 +133,41 @@ class _GuardianScreenState extends State<GuardianScreen> {
           // Add angel button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: MegidaiColors.primary.withOpacity(0.1),
-                border: Border.all(
-                  color: MegidaiColors.primary.withOpacity(0.3),
-                  width: 1.5,
-                  style: BorderStyle.solid,
+            child: InkWell(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Fonctionnalité "Ajouter un Ange" bientôt disponible')),
+                );
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: MegidaiColors.primary.withOpacity(0.1),
+                  border: Border.all(
+                    color: MegidaiColors.primary.withOpacity(0.3),
+                    width: 1.5,
+                    style: BorderStyle.solid,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.add,
-                    color: MegidaiColors.primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Ajouter un Ange Gardien',
-                    style: theme.textTheme.titleSmall?.copyWith(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.add,
                       color: MegidaiColors.primary,
-                      fontWeight: FontWeight.w500,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Text(
+                      'Ajouter un Ange Gardien',
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: MegidaiColors.primary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -172,6 +199,12 @@ class _GuardianScreenState extends State<GuardianScreen> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
+        tooltip: 'Accueil',
+        child: const Icon(Icons.home),
+        backgroundColor: MegidaiColors.primary,
       ),
     );
   }

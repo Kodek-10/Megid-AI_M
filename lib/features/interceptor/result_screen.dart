@@ -1,26 +1,47 @@
 import 'package:flutter/material.dart';
 import '../../core/theme.dart';
 
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   final String url;
   final double score;
+  final VoidCallback onThemeToggle;
+  final bool isDarkMode;
 
   const ResultScreen({
     super.key,
     required this.url,
     required this.score,
+    required this.onThemeToggle,
+    required this.isDarkMode,
   });
 
   @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final grade = _getGrade(score);
+    final grade = _getGrade(widget.score);
     final gradeColor = _getGradeColor(grade);
-    final findings = _getFindings(score);
+    final findings = _getFindings(widget.score);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Résultat d\'analyse'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+          tooltip: 'Retour',
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            onPressed: widget.onThemeToggle,
+            tooltip: widget.isDarkMode ? 'Mode jour' : 'Mode nuit',
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -34,8 +55,8 @@ class ResultScreen extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: theme.brightness == Brightness.dark
-                      ? [const Color(0xFF0F2A6E), const Color(0xFF1B4FD8)]
-                      : [const Color(0xFF3B82F6), const Color(0xFF1D4ED8)],
+                      ? [MegidaiColors.primary.withOpacity(0.8), MegidaiColors.secondary.withOpacity(0.8)]
+                      : [MegidaiColors.primary, MegidaiColors.secondary],
                 ),
               ),
               child: Column(
@@ -105,7 +126,7 @@ class ResultScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  _getDomain(url),
+                                  _getDomain(widget.url),
                                   style: theme.textTheme.titleSmall?.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -183,7 +204,7 @@ class ResultScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            'Score de sécurité: ${score.round()}%',
+                            'Score de sécurité: ${widget.score.round()}%',
                             style: theme.textTheme.titleSmall?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
@@ -191,11 +212,11 @@ class ResultScreen extends StatelessWidget {
                           const SizedBox(height: 12),
                           Row(
                             children: [
-                              _buildScaleItem('A', score >= 80, const Color(0xFF059669)),
-                              _buildScaleItem('B', score >= 60 && score < 80, const Color(0xFF10B981)),
-                              _buildScaleItem('C', score >= 40 && score < 60, const Color(0xFFF59E0B)),
-                              _buildScaleItem('D', score >= 20 && score < 40, const Color(0xFFF97316)),
-                              _buildScaleItem('E', score < 20, const Color(0xFFEF4444)),
+                              _buildScaleItem('A', widget.score >= 80, const Color(0xFF059669)),
+                              _buildScaleItem('B', widget.score >= 60 && widget.score < 80, const Color(0xFF10B981)),
+                              _buildScaleItem('C', widget.score >= 40 && widget.score < 60, const Color(0xFFF59E0B)),
+                              _buildScaleItem('D', widget.score >= 20 && widget.score < 40, const Color(0xFFF97316)),
+                              _buildScaleItem('E', widget.score < 20, const Color(0xFFEF4444)),
                             ],
                           ),
                         ],
@@ -215,9 +236,8 @@ class ResultScreen extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // Share result
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Partage bientôt disponible')),
+                          const SnackBar(content: Text('Partage bientôt disponible !')),
                         );
                       },
                       icon: const Icon(Icons.share),
@@ -251,6 +271,12 @@ class ResultScreen extends StatelessWidget {
             const SizedBox(height: 24),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
+        tooltip: 'Accueil',
+        child: const Icon(Icons.home),
+        backgroundColor: MegidaiColors.primary,
       ),
     );
   }

@@ -3,15 +3,20 @@ import 'package:flutter/material.dart';
 
 // ── Couleurs principales de Megidai ──────────────────────────────────
 class MegidaiColors {
-  // Couleurs de base
-  static const Color primary = Color(0xFF00D4FF);      // Bleu cyan principal
-  static const Color secondary = Color(0xFF00FF88);    // Vert menthe
-  static const Color accent = Color(0xFFFF6B00);       // Orange accent
+  // Couleurs de base - Rouge, Vert, Orange comme demandé
+  static const Color primary = Color(0xFFFF4444);      // Rouge principal
+  static const Color secondary = Color(0xFF44FF44);    // Vert menthe
+  static const Color accent = Color(0xFFFF8844);       // Orange accent
 
   // Thème sombre
   static const Color darkBackground = Color(0xFF0A0A0A); // Noir profond
   static const Color darkSurface = Color(0xFF1A1A1A);    // Gris très sombre
   static const Color darkCard = Color(0xFF2A2A2A);      // Gris sombre pour cartes
+
+  // Thème clair
+  static const Color lightBackground = Color(0xFFF8F8F8); // Gris très clair
+  static const Color lightSurface = Color(0xFFFFFFFF);    // Blanc
+  static const Color lightCard = Color(0xFFF5F5F5);       // Gris très clair pour cartes
 
   // Texte
   static const Color textPrimary = Color(0xFFFFFFFF);    // Blanc
@@ -19,14 +24,14 @@ class MegidaiColors {
   static const Color textGray = Color(0xFF808080);       // Gris moyen
 
   // États
-  static const Color success = Color(0xFF00FF88);        // Vert succès
-  static const Color warning = Color(0xFFFFD700);        // Jaune avertissement
+  static const Color success = Color(0xFF44FF44);        // Vert succès
+  static const Color warning = Color(0xFFFFAA44);        // Orange avertissement
   static const Color error = Color(0xFFFF4444);          // Rouge erreur
-  static const Color info = Color(0xFF00D4FF);           // Bleu info
+  static const Color info = Color(0xFFFF4444);           // Rouge info
 
   // Sécurité
-  static const Color secure = Color(0xFF00FF88);         // Vert sécurisé
-  static const Color suspicious = Color(0xFFFFD700);     // Jaune suspect
+  static const Color secure = Color(0xFF44FF44);         // Vert sécurisé
+  static const Color suspicious = Color(0xFFFFAA44);     // Orange suspect
   static const Color dangerous = Color(0xFFFF4444);      // Rouge dangereux
 }
 
@@ -209,17 +214,17 @@ class MegidaiTheme {
 
       // Colors
       primaryColor: MegidaiColors.primary,
-      scaffoldBackgroundColor: const Color(0xFFF8FAFC), // Light background
-      cardColor: Colors.white,
+      scaffoldBackgroundColor: MegidaiColors.lightBackground,
+      cardColor: MegidaiColors.lightCard,
 
       // AppBar
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.white,
-        foregroundColor: Color(0xFF0F172A),
+        backgroundColor: MegidaiColors.lightSurface,
+        foregroundColor: Color(0xFF1A1A1A),
         elevation: 0,
         centerTitle: true,
         titleTextStyle: TextStyle(
-          color: Color(0xFF0F172A),
+          color: Color(0xFF1A1A1A),
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
@@ -248,12 +253,12 @@ class MegidaiTheme {
 
       // Cards
       cardTheme: CardThemeData(
-        color: Colors.white,
-        elevation: 4,
+        color: MegidaiColors.lightCard,
+        elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: const BorderSide(
-            color: Color(0xFFE2E8F0),
+            color: Color(0xFFE0E0E0),
             width: 0.5,
           ),
         ),
@@ -262,26 +267,26 @@ class MegidaiTheme {
       // Text fields
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: const Color(0xFFF1F5F9),
+        fillColor: const Color(0xFFF0F0F0),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+          borderSide: const BorderSide(color: Color(0xFFCCCCCC)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+          borderSide: const BorderSide(color: Color(0xFFCCCCCC)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: MegidaiColors.primary, width: 2),
         ),
-        labelStyle: const TextStyle(color: Color(0xFF64748B)),
-        hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
+        labelStyle: const TextStyle(color: Color(0xFF666666)),
+        hintStyle: const TextStyle(color: Color(0xFF999999)),
       ),
 
       // Dialogs
       dialogTheme: DialogThemeData(
-        backgroundColor: Colors.white,
+        backgroundColor: MegidaiColors.lightSurface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
@@ -298,73 +303,73 @@ class MegidaiTheme {
           if (states.contains(WidgetState.selected)) {
             return MegidaiColors.primary;
           }
-          return const Color(0xFF94A3B8);
+          return const Color(0xFF999999);
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return MegidaiColors.primary.withOpacity(0.3);
           }
-          return const Color(0xFFCBD5E1);
+          return const Color(0xFFCCCCCC);
         }),
       ),
 
       // Text
       textTheme: const TextTheme(
         displayLarge: TextStyle(
-          color: Color(0xFF0F172A),
+          color: Color(0xFF1A1A1A),
           fontSize: 32,
           fontWeight: FontWeight.bold,
         ),
         displayMedium: TextStyle(
-          color: Color(0xFF0F172A),
+          color: Color(0xFF1A1A1A),
           fontSize: 28,
           fontWeight: FontWeight.bold,
         ),
         displaySmall: TextStyle(
-          color: Color(0xFF0F172A),
+          color: Color(0xFF1A1A1A),
           fontSize: 24,
           fontWeight: FontWeight.bold,
         ),
         headlineLarge: TextStyle(
-          color: Color(0xFF0F172A),
+          color: Color(0xFF1A1A1A),
           fontSize: 22,
           fontWeight: FontWeight.w600,
         ),
         headlineMedium: TextStyle(
-          color: Color(0xFF0F172A),
+          color: Color(0xFF1A1A1A),
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
         headlineSmall: TextStyle(
-          color: Color(0xFF0F172A),
+          color: Color(0xFF1A1A1A),
           fontSize: 18,
           fontWeight: FontWeight.w600,
         ),
         titleLarge: TextStyle(
-          color: Color(0xFF0F172A),
+          color: Color(0xFF1A1A1A),
           fontSize: 16,
           fontWeight: FontWeight.w600,
         ),
         titleMedium: TextStyle(
-          color: Color(0xFF0F172A),
+          color: Color(0xFF1A1A1A),
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
         titleSmall: TextStyle(
-          color: Color(0xFF0F172A),
+          color: Color(0xFF1A1A1A),
           fontSize: 12,
           fontWeight: FontWeight.w500,
         ),
         bodyLarge: TextStyle(
-          color: Color(0xFF0F172A),
+          color: Color(0xFF1A1A1A),
           fontSize: 16,
         ),
         bodyMedium: TextStyle(
-          color: Color(0xFF64748B),
+          color: Color(0xFF666666),
           fontSize: 14,
         ),
         bodySmall: TextStyle(
-          color: Color(0xFF94A3B8),
+          color: Color(0xFF999999),
           fontSize: 12,
         ),
       ),

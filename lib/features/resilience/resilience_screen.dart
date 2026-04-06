@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import '../../core/theme.dart';
 
 class ResilienceScreen extends StatefulWidget {
-  const ResilienceScreen({super.key});
+  const ResilienceScreen({
+    super.key,
+    required this.onThemeToggle,
+    required this.isDarkMode,
+  });
+
+  final VoidCallback onThemeToggle;
+  final bool isDarkMode;
 
   @override
   State<ResilienceScreen> createState() => _ResilienceScreenState();
@@ -46,6 +53,18 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Résilience'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+          tooltip: 'Retour',
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            onPressed: widget.onThemeToggle,
+            tooltip: widget.isDarkMode ? 'Mode jour' : 'Mode nuit',
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -59,8 +78,8 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: isDark
-                      ? [const Color(0xFF0F2A6E), const Color(0xFF1B4FD8)]
-                      : [const Color(0xFF3B82F6), const Color(0xFF1D4ED8)],
+                      ? [MegidaiColors.primary.withOpacity(0.8), MegidaiColors.secondary.withOpacity(0.8)]
+                      : [MegidaiColors.primary, MegidaiColors.secondary],
                 ),
               ),
               child: Column(
@@ -188,9 +207,8 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigate to assessment or improvement tips
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Test de résilience bientôt disponible')),
+                      const SnackBar(content: Text('Test de résilience bientôt disponible !')),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -207,6 +225,12 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
             const SizedBox(height: 16),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
+        tooltip: 'Accueil',
+        child: const Icon(Icons.home),
+        backgroundColor: MegidaiColors.primary,
       ),
     );
   }

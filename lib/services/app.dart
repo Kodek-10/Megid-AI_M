@@ -36,7 +36,10 @@ class _MegidaiAppState extends State<MegidaiApp> {
     routes: [
       GoRoute(
         path: '/',               // URL de la route
-        builder: (context, state) => HomeScreen(onThemeToggle: _toggleTheme, isDarkMode: _themeMode == ThemeMode.dark),
+        builder: (context, state) => HomeScreen(
+          onThemeToggle: _toggleTheme,
+          isDarkMode: _themeMode == ThemeMode.dark,
+        ),
       ),
       GoRoute(
         path: '/result',         // Affiché après analyse d'un lien
@@ -47,20 +50,31 @@ class _MegidaiAppState extends State<MegidaiApp> {
           return ResultScreen(
             url: args?['url'] ?? '',
             score: args?['score'] ?? 0.0,
+            onThemeToggle: _toggleTheme,
+            isDarkMode: _themeMode == ThemeMode.dark,
           );
         },
       ),
       GoRoute(
         path: '/guardian',
-        builder: (context, state) => const GuardianScreen(),
+        builder: (context, state) => GuardianScreen(
+          onThemeToggle: _toggleTheme,
+          isDarkMode: _themeMode == ThemeMode.dark,
+        ),
       ),
       GoRoute(
         path: '/resilience',
-        builder: (context, state) => const ResilienceScreen(),
+        builder: (context, state) => ResilienceScreen(
+          onThemeToggle: _toggleTheme,
+          isDarkMode: _themeMode == ThemeMode.dark,
+        ),
       ),
       GoRoute(
         path: '/education',
-        builder: (context, state) => const EducationScreen(),
+        builder: (context, state) => EducationScreen(
+          onThemeToggle: _toggleTheme,
+          isDarkMode: _themeMode == ThemeMode.dark,
+        ),
       ),
     ],
   );
