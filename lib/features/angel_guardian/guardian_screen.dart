@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/bottom_nav.dart';
 import '../../core/theme.dart';
 
 class GuardianScreen extends StatefulWidget {
@@ -16,6 +17,11 @@ class GuardianScreen extends StatefulWidget {
 }
 
 class _GuardianScreenState extends State<GuardianScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _relationController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
+
   final List<Map<String, dynamic>> _logs = [
     {
       'who': 'Système',
@@ -47,6 +53,30 @@ class _GuardianScreenState extends State<GuardianScreen> {
     },
   ];
 
+  final List<Map<String, String>> _guardians = [
+    {
+      'name': 'Awa Sawadogo',
+      'relation': 'Maman',
+      'status': 'Protection active',
+      'score': '64',
+    },
+    {
+      'name': 'Kofi Sawadogo',
+      'relation': 'Grand-père',
+      'status': 'Alerte récente',
+      'score': '51',
+    },
+  ];
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _relationController.dispose();
+    _phoneController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -55,11 +85,6 @@ class _GuardianScreenState extends State<GuardianScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ange Gardien'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-          tooltip: 'Retour',
-        ),
         actions: [
           IconButton(
             icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
@@ -133,42 +158,42 @@ class _GuardianScreenState extends State<GuardianScreen> {
           // Add angel button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: InkWell(
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Fonctionnalité "Ajouter un Ange" bientôt disponible')),
-                );
-              },
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: MegidaiColors.primary.withOpacity(0.1),
-                  border: Border.all(
-                    color: MegidaiColors.primary.withOpacity(0.3),
-                    width: 1.5,
-                    style: BorderStyle.solid,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.add,
-                      color: MegidaiColors.primary,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Ajouter un Ange Gardien',
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: MegidaiColors.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+            child: ElevatedButton.icon(
+              onPressed: _openAddGuardianSheet,
+              icon: const Icon(Icons.person_add),
+              label: const Text('Ajouter un Ange Gardien'),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(54),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
                 ),
               ),
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // Guardian list
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              'Personnes sous protection',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 160,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: _guardians.length,
+              itemBuilder: (context, index) {
+                final guardian = _guardians[index];
+                return _buildGuardianCard(guardian);
+              },
             ),
           ),
 
@@ -200,12 +225,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
-        tooltip: 'Accueil',
-        child: const Icon(Icons.home),
-        backgroundColor: MegidaiColors.primary,
-      ),
+      bottomNavigationBar: const MegidaiBottomNav(currentRoute: '/guardian'),
     );
   }
 
@@ -216,30 +236,225 @@ class _GuardianScreenState extends State<GuardianScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: theme.cardColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: theme.dividerColor.withOpacity(0.5),
+          color: theme.dividerColor.withOpacity(0.4),
         ),
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 8),
+          Icon(icon, color: color, size: 26),
+          const SizedBox(height: 12),
           Text(
             title,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+              color: theme.textTheme.bodySmall?.color?.withOpacity(0.75),
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 6),
           Text(
             value,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildGuardianCard(Map<String, String> guardian) {
+    final theme = Theme.of(context);
+
+    return Container(
+      width: 220,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: theme.dividerColor.withOpacity(0.4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundColor: MegidaiColors.primary.withOpacity(0.15),
+                child: Text(
+                  guardian['name']![0],
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: MegidaiColors.primary,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      guardian['name']!,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      guardian['relation']!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            guardian['status']!,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: MegidaiColors.success,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const Spacer(),
+          Row(
+            children: [
+              const Icon(Icons.star, size: 16, color: MegidaiColors.primary),
+              const SizedBox(width: 6),
+              Text(
+                guardian['score']!,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '/100',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _openAddGuardianSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 24,
+            right: 24,
+            top: 24,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Ajouter un Ange Gardien',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nom',
+                    prefixIcon: Icon(Icons.person),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _relationController,
+                  decoration: const InputDecoration(
+                    labelText: 'Relation',
+                    prefixIcon: Icon(Icons.group),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    labelText: 'Téléphone',
+                    prefixIcon: Icon(Icons.phone),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _noteController,
+                  maxLines: 3,
+                  decoration: const InputDecoration(
+                    labelText: 'Note',
+                    prefixIcon: Icon(Icons.note),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _addGuardian,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: const Text('Enregistrer'),
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _addGuardian() {
+    final name = _nameController.text.trim();
+    final relation = _relationController.text.trim();
+    if (name.isEmpty || relation.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez saisir le nom et la relation')),
+      );
+      return;
+    }
+
+    setState(() {
+      _guardians.add({
+        'name': name,
+        'relation': relation,
+        'status': 'Protection en cours',
+        'score': '70',
+      });
+    });
+
+    _nameController.clear();
+    _relationController.clear();
+    _phoneController.clear();
+    _noteController.clear();
+
+    Navigator.of(context).pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Ange gardien ajouté : $name')),
     );
   }
 

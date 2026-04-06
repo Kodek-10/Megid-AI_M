@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/bottom_nav.dart';
 import '../../core/theme.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -30,11 +31,6 @@ class _ResultScreenState extends State<ResultScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Résultat d\'analyse'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-          tooltip: 'Retour',
-        ),
         actions: [
           IconButton(
             icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
@@ -272,12 +268,7 @@ class _ResultScreenState extends State<ResultScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
-        tooltip: 'Accueil',
-        child: const Icon(Icons.home),
-        backgroundColor: MegidaiColors.primary,
-      ),
+      bottomNavigationBar: const MegidaiBottomNav(currentRoute: '/result'),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/bottom_nav.dart';
 import '../../core/theme.dart';
 
 class EducationScreen extends StatefulWidget {
@@ -57,19 +58,20 @@ class _EducationScreenState extends State<EducationScreen> {
     'Total': 25,
   };
 
+  String _selectedLevel = 'Tous';
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final filteredLessons = _lessons.where((lesson) {
+      if (_selectedLevel == 'Tous') return true;
+      return lesson['tag'] == _selectedLevel;
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Éducation'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-          tooltip: 'Retour',
-        ),
         actions: [
           IconButton(
             icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
@@ -220,6 +222,34 @@ class _EducationScreenState extends State<EducationScreen> {
 
           const SizedBox(height: 16),
 
+          // Niveau filter
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Wrap(
+              spacing: 10,
+              runSpacing: 8,
+              children: ['Tous', 'Débutant', 'Intermédiaire', 'Avancé'].map((level) {
+                final isSelected = _selectedLevel == level;
+                return ChoiceChip(
+                  label: Text(level),
+                  selected: isSelected,
+                  onSelected: (_) {
+                    setState(() {
+                      _selectedLevel = level;
+                    });
+                  },
+                  selectedColor: MegidaiColors.primary.withOpacity(0.15),
+                  backgroundColor: theme.cardColor,
+                  labelStyle: theme.textTheme.bodySmall?.copyWith(
+                    color: isSelected ? MegidaiColors.primary : theme.textTheme.bodySmall?.color,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
           // Lessons title
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -237,21 +267,16 @@ class _EducationScreenState extends State<EducationScreen> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: _lessons.length,
+              itemCount: filteredLessons.length,
               itemBuilder: (context, index) {
-                final lesson = _lessons[index];
+                final lesson = filteredLessons[index];
                 return _buildLessonCard(lesson);
               },
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
-        tooltip: 'Accueil',
-        child: const Icon(Icons.home),
-        backgroundColor: MegidaiColors.primary,
-      ),
+      bottomNavigationBar: const MegidaiBottomNav(currentRoute: '/education'),
     );
   }
 

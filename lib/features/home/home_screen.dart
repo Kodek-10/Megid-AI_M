@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/bottom_nav.dart';
 import '../../core/theme.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -54,15 +55,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: isDark
-                      ? [const Color(0xFF0F2A6E), const Color(0xFF1B4FD8)]
-                      : [const Color(0xFF3B82F6), const Color(0xFF1D4ED8)],
+                      ? [MegidaiColors.primary.withOpacity(0.9), MegidaiColors.secondary.withOpacity(0.9)]
+                      : [MegidaiColors.primary, MegidaiColors.secondary],
                 ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Bouclier Numérique',
+                    'Bonjour, bienvenue !',
                     style: theme.textTheme.headlineMedium?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -70,14 +71,42 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Protection intelligente contre les menaces en ligne',
+                    'Votre protection intelligente en un coup d’œil',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withOpacity(0.85),
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _buildMiniStatCard(
+                      context,
+                      title: 'Score',
+                      value: '78',
+                      subtitle: 'Résilience',
+                      icon: Icons.bar_chart,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildMiniStatCard(
+                      context,
+                      title: 'Anges',
+                      value: '03',
+                      subtitle: 'Actifs',
+                      icon: Icons.shield,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
 
             // Scan section
             Padding(
@@ -207,6 +236,56 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 24),
           ],
         ),
+      ),
+      bottomNavigationBar: const MegidaiBottomNav(currentRoute: '/'),
+    );
+  }
+
+  Widget _buildMiniStatCard(
+    BuildContext context,
+    {required String title,
+    required String value,
+    required String subtitle,
+    required IconData icon}) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.dividerColor.withOpacity(0.4)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: MegidaiColors.primary.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: MegidaiColors.primary, size: 22),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.75),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
