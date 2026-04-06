@@ -3,36 +3,39 @@ import 'package:flutter/material.dart';
 
 // ── Couleurs principales de Megidai ──────────────────────────────────
 class MegidaiColors {
-  // Couleurs de base - Rouge, Vert, Orange comme demandé
-  static const Color primary = Color(0xFFFF4444);      // Rouge principal
-  static const Color secondary = Color(0xFF44FF44);    // Vert menthe
-  static const Color accent = Color(0xFFFF8844);       // Orange accent
+  // Couleurs de base pour un thème de sécurité cohérent
+  static const Color primary = Color(0xFF1E3A8A);      // Bleu nuit profond, base du thème
+  static const Color secondary = Color(0xFF16A34A);    // Vert sécurisant
+  static const Color accent = Color(0xFFF97316);       // Orange dynamique
+  static const Color danger = Color(0xFFEF4444);       // Rouge alerte
+  static const Color caution = Color(0xFFF59E0B);      // Orange avertissement
+  static const Color safe = Color(0xFF22C55E);         // Vert confiance
 
   // Thème sombre
-  static const Color darkBackground = Color(0xFF0A0A0A); // Noir profond
-  static const Color darkSurface = Color(0xFF1A1A1A);    // Gris très sombre
-  static const Color darkCard = Color(0xFF2A2A2A);      // Gris sombre pour cartes
+  static const Color darkBackground = Color(0xFF020617); // Nuit profonde
+  static const Color darkSurface = Color(0xFF0F172A);    // Bleu ardoise sombre
+  static const Color darkCard = Color(0xFF12233A);      // Bleu minuit saturé
 
   // Thème clair
-  static const Color lightBackground = Color(0xFFF8F8F8); // Gris très clair
-  static const Color lightSurface = Color(0xFFFFFFFF);    // Blanc
-  static const Color lightCard = Color(0xFFF5F5F5);       // Gris très clair pour cartes
+  static const Color lightBackground = Color(0xFFF8FAFC); // Gris très clair
+  static const Color lightSurface = Color(0xFFFFFFFF);    // Blanc pur
+  static const Color lightCard = Color(0xFFF5F7FF);       // Blanc bleuté très léger
 
   // Texte
-  static const Color textPrimary = Color(0xFFFFFFFF);    // Blanc
-  static const Color textSecondary = Color(0xFFB0B0B0);  // Gris clair
-  static const Color textGray = Color(0xFF808080);       // Gris moyen
+  static const Color textPrimary = Color(0xFFE2E8F0);    // Blanc bleuté
+  static const Color textSecondary = Color(0xFF94A3B8);  // Gris clair bleuté
+  static const Color textGray = Color(0xFF64748B);       // Gris acier
 
   // États
-  static const Color success = Color(0xFF44FF44);        // Vert succès
-  static const Color warning = Color(0xFFFFAA44);        // Orange avertissement
-  static const Color error = Color(0xFFFF4444);          // Rouge erreur
-  static const Color info = Color(0xFFFF4444);           // Rouge info
+  static const Color success = safe;                    // Vert sécurisé
+  static const Color warning = caution;                 // Orange attention
+  static const Color error = danger;                    // Rouge danger
+  static const Color info = Color(0xFF38BDF8);          // Cyan informatif
 
   // Sécurité
-  static const Color secure = Color(0xFF44FF44);         // Vert sécurisé
-  static const Color suspicious = Color(0xFFFFAA44);     // Orange suspect
-  static const Color dangerous = Color(0xFFFF4444);      // Rouge dangereux
+  static const Color secure = safe;                     // Vert confiance
+  static const Color suspicious = caution;              // Orange suspect
+  static const Color dangerous = danger;                // Rouge dangereux
 }
 
 // ── Thème principal de l'application ────────────────────────────────

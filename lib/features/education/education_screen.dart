@@ -24,7 +24,23 @@ class _EducationScreenState extends State<EducationScreen> {
       'tag': 'Débutant',
       'duration': '15 min',
       'status': 'completed',
-      'color': Colors.green,
+      'color': MegidaiColors.safe,
+      'content': {
+        'sections': [
+          {
+            'title': 'Introduction',
+            'text': 'La sécurité en ligne est fondamentale. Apprenez les concepts clés pour vous protéger.'
+          },
+          {
+            'title': 'Les menaces courantes',
+            'text': 'Virus, malwares, phishing, vol d\'identité... Connaître les risques est le premier pas.'
+          },
+          {
+            'title': 'Bonnes pratiques',
+            'text': 'Utilisez des mots de passe forts, activez l\'authentification à deux facteurs, gardez vos logiciels à jour.'
+          },
+        ]
+      }
     },
     {
       'title': 'Reconnaître les tentatives de phishing',
@@ -32,7 +48,19 @@ class _EducationScreenState extends State<EducationScreen> {
       'tag': 'Intermédiaire',
       'duration': '20 min',
       'status': 'in_progress',
-      'color': Colors.blue,
+      'color': MegidaiColors.danger,
+      'content': {
+        'sections': [
+          {
+            'title': 'Qu\'est-ce que le phishing ?',
+            'text': 'Le phishing est une technique de cybercriminalité visant à obtenir vos données personnelles.'
+          },
+          {
+            'title': 'Comment le reconnaître',
+            'text': 'Cherchez les pièges : adresses email suspectes, liens étranges, demandes d\'informations confidentielles.'
+          },
+        ]
+      }
     },
     {
       'title': 'Gérer ses mots de passe',
@@ -40,7 +68,19 @@ class _EducationScreenState extends State<EducationScreen> {
       'tag': 'Débutant',
       'duration': '12 min',
       'status': 'new',
-      'color': Colors.orange,
+      'color': MegidaiColors.accent,
+      'content': {
+        'sections': [
+          {
+            'title': 'Mots de passe forts',
+            'text': 'Un bon mot de passe contient des majuscules, minuscules, chiffres et caractères spéciaux.'
+          },
+          {
+            'title': 'Gestionnaires de mots de passe',
+            'text': 'Utilisez des applications comme Bitwarden ou 1Password pour stocker vos mots de passe de manière sécurisée.'
+          },
+        ]
+      }
     },
     {
       'title': 'La navigation sécurisée',
@@ -48,7 +88,66 @@ class _EducationScreenState extends State<EducationScreen> {
       'tag': 'Intermédiaire',
       'duration': '18 min',
       'status': 'new',
-      'color': Colors.purple,
+      'color': MegidaiColors.primary,
+      'content': {
+        'sections': [
+          {
+            'title': 'HTTPS vs HTTP',
+            'text': 'HTTPS chiffre vos données. Vérifiez toujours que le site utilise HTTPS (le cadenas dans la barre d\'adresse).'
+          },
+          {
+            'title': 'Avertissements du navigateur',
+            'text': 'Si votre navigateur affiche un avertissement, ne poursuivez pas. Le site n\'est probablement pas sûr.'
+          },
+        ]
+      }
+    },
+  ];
+
+  final List<Map<String, dynamic>> _quizzes = [
+    {
+      'question': 'Que signifie HTTPS ?',
+      'answers': [
+        'HyperText Transfer Protocol Secure',
+        'HyperText Transfer Protocol System',
+        'High Tech Protocol Security',
+        'Home Transfer Protocol Safety'
+      ],
+      'correctAnswer': 0,
+      'explanation': 'HTTPS signifie HyperText Transfer Protocol Secure, qui chiffre vos données.'
+    },
+    {
+      'question': 'Quel est le meilleur endroit pour stocker vos mots de passe ?',
+      'answers': [
+        'Dans un gestionnaire de mots de passe',
+        'Dans un fichier texte sur votre bureau',
+        'Dans votre navigateur',
+        'Écrit sur un post-it'
+      ],
+      'correctAnswer': 0,
+      'explanation': 'Un gestionnaire de mots de passe est la solution la plus sûre.'
+    },
+    {
+      'question': 'Que faire si vous recevez un email suspect ?',
+      'answers': [
+        'Cliquer sur le lien pour vérifier',
+        'Le signaler et le supprimer immédiatement',
+        'Répondre à l\'email',
+        'Le transférer à vos amis'
+      ],
+      'correctAnswer': 1,
+      'explanation': 'Signalez les emails suspects à votre fournisseur de messagerie et supprimez-les.'
+    },
+    {
+      'question': 'Comment reconnaître un site phishing ?',
+      'answers': [
+        'L\'URL n\'est pas exactement celle attendue',
+        'Le site demande des informations confidentielles inopinément',
+        'Le design semble mauvais',
+        'Les deux premières réponses'
+      ],
+      'correctAnswer': 3,
+      'explanation': 'Les deux premiers points sont des signes d\'alerte pour le phishing.'
     },
   ];
 
@@ -161,11 +260,7 @@ class _EducationScreenState extends State<EducationScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: InkWell(
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Quiz bientôt disponible !')),
-                );
-              },
+              onTap: () => _startQuiz(),
               borderRadius: BorderRadius.circular(12),
               child: Container(
                 padding: const EdgeInsets.all(16),
@@ -305,11 +400,7 @@ class _EducationScreenState extends State<EducationScreen> {
     }
 
     return InkWell(
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Leçon "${lesson['title']}" bientôt disponible !')),
-        );
-      },
+      onTap: () => _showLessonContent(lesson),
       borderRadius: BorderRadius.circular(12),
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
@@ -430,6 +521,303 @@ class _EducationScreenState extends State<EducationScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _startQuiz() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return QuizWidget(
+          questions: _quizzes,
+          onQuizComplete: (score) {
+            Navigator.of(context).pop();
+            _showQuizResults(score);
+          },
+        );
+      },
+    );
+  }
+
+  void _showLessonContent(Map<String, dynamic> lesson) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        final theme = Theme.of(context);
+        final sections = lesson['content']?['sections'] as List? ?? [];
+        
+        return DraggableScrollableSheet(
+          expand: false,
+          builder: (context, scrollController) {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    lesson['title'],
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    controller: scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: sections.length,
+                    itemBuilder: (context, index) {
+                      final section = sections[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              section['title'],
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              section['text'],
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('Fermer'),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showQuizResults(int score) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        
+        return AlertDialog(
+          title: const Text('Résultats du quiz'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 100,
+                height: 100,
+                child: Stack(
+                  children: [
+                    CircularProgressIndicator(
+                      value: score / 100,
+                      strokeWidth: 8,
+                      backgroundColor: theme.dividerColor,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        score >= 70 ? MegidaiColors.success : MegidaiColors.warning,
+                      ),
+                    ),
+                    Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '$score',
+                            style: theme.textTheme.displaySmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: score >= 70 ? MegidaiColors.success : MegidaiColors.warning,
+                            ),
+                          ),
+                          Text(
+                            '/100',
+                            style: theme.textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                score >= 70 ? 'Bien joué !' : 'Vous pouvez améliorer',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                score >= 70
+                    ? 'Vous maîtrisez bien ce sujet !'
+                    : 'Revoyez la leçon pour améliorer vos connaissances.',
+                style: theme.textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+class QuizWidget extends StatefulWidget {
+  final List<Map<String, dynamic>> questions;
+  final Function(int) onQuizComplete;
+
+  const QuizWidget({
+    required this.questions,
+    required this.onQuizComplete,
+    super.key,
+  });
+
+  @override
+  State<QuizWidget> createState() => _QuizWidgetState();
+}
+
+class _QuizWidgetState extends State<QuizWidget> {
+  int _currentIndex = 0;
+  int _correctAnswers = 0;
+
+  void _selectAnswer(int answerIndex) {
+    final question = widget.questions[_currentIndex];
+    final isCorrect = answerIndex == question['correctAnswer'];
+    
+    if (isCorrect) {
+      _correctAnswers++;
+    }
+
+    if (_currentIndex < widget.questions.length - 1) {
+      setState(() {
+        _currentIndex++;
+      });
+    } else {
+      // Calculate final percentage
+      final percentage = ((_correctAnswers / widget.questions.length) * 100).round();
+      widget.onQuizComplete(percentage);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final question = widget.questions[_currentIndex];
+    final progress = (_currentIndex + 1) / widget.questions.length;
+
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Progress bar
+          LinearProgressIndicator(
+            value: progress,
+            minHeight: 6,
+            backgroundColor: theme.dividerColor,
+            valueColor: const AlwaysStoppedAnimation<Color>(MegidaiColors.primary),
+          ),
+          const SizedBox(height: 16),
+          
+          // Question counter
+          Text(
+            'Question ${_currentIndex + 1}/${widget.questions.length}',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Question
+          Text(
+            question['question'],
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Answers
+          ...List.generate(
+            (question['answers'] as List).length,
+            (index) {
+              final answer = question['answers'][index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: InkWell(
+                  onTap: () => _selectAnswer(index),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: theme.cardColor,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: theme.dividerColor.withOpacity(0.5),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: MegidaiColors.primary,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            answer,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

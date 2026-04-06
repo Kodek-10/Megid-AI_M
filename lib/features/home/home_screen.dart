@@ -19,11 +19,36 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _urlController = TextEditingController();
+  final List<String> _searchHistory = ['example.com', 'google.com', 'facebook.com'];
+  List<String> _filteredHistory = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _filteredHistory = _searchHistory;
+  }
 
   @override
   void dispose() {
     _urlController.dispose();
     super.dispose();
+  }
+
+  void _handleSearch() {
+    final url = _urlController.text.trim();
+    if (url.isEmpty) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Analyse de $url en cours...')),
+    );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      context.push('/result', extra: {
+        'url': url,
+        'score': (50 + (url.length % 35)).toDouble(),
+      });
+    });
   }
 
   @override
@@ -113,67 +138,55 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  // Scan box
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: theme.cardColor,
-                      border: Border.all(
-                        color: theme.dividerColor,
-                        width: 1.5,
-                        style: BorderStyle.solid,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.search,
-                          size: 32,
-                          color: theme.iconTheme.color,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Analyser un lien',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Vérifiez la sécurité d\'un site web',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // URL input
+                  // URL input with search icon
                   TextField(
                     controller: _urlController,
+                    onChanged: (value) {
+                      setState(() {
+                        if (value.isEmpty) {
+                          _filteredHistory = _searchHistory;
+                        } else {
+                          _filteredHistory = _searchHistory
+                              .where((item) => item.toLowerCase().contains(value.toLowerCase()))
+                              .toList();
+                        }
+                      });
+                    },
                     decoration: InputDecoration(
-                      hintText: 'Entrez l\'URL à analyser...',
-                      prefixIcon: const Icon(Icons.link),
+                      hintText: 'Analyser un lien...',
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: _urlController.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _urlController.clear();
+                                setState(() {
+                                  _filteredHistory = _searchHistory;
+                                });
+                              },
+                            )
+                          : null,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide(
+                          color: theme.dividerColor.withOpacity(0.5),
+                        ),
                       ),
                       filled: true,
-                      fillColor: theme.inputDecorationTheme.fillColor,
+                      fillColor: theme.cardColor,
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
 
                   // Scan button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: _analyzeUrl,
+                      onPressed: _handleSearch,
                       icon: const Icon(Icons.security),
                       label: const Text('Analyser'),
                       style: ElevatedButton.styleFrom(
@@ -184,6 +197,52 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
+
+                  // Search history
+                  if (_urlController.text.isNotEmpty && _filteredHistory.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Historique',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          ..._filteredHistory.map((item) {
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 6),
+                              child: InkWell(
+                                onTap: () {
+                                  _urlController.text = item;
+                                  _handleSearch();
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.history,
+                                      size: 16,
+                                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      item,
+                                      style: theme.textTheme.bodySmall?.copyWith(
+                                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -365,17 +424,6 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    // Simulate analysis
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Analyse en cours...')),
-    );
-
-    // Navigate to result screen with mock data
-    Future.delayed(const Duration(seconds: 2), () {
-      context.go('/result', extra: {
-        'url': url,
-        'score': 85.0, // Mock score
-      });
-    });
+    _handleSearch();
   }
 }

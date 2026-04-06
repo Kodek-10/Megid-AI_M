@@ -265,80 +265,328 @@ class _GuardianScreenState extends State<GuardianScreen> {
 
   Widget _buildGuardianCard(Map<String, String> guardian) {
     final theme = Theme.of(context);
+    final guardianIndex = _guardians.indexOf(guardian);
 
-    return Container(
-      width: 220,
-      margin: const EdgeInsets.only(right: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: theme.dividerColor.withOpacity(0.4)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: MegidaiColors.primary.withOpacity(0.15),
-                child: Text(
-                  guardian['name']![0],
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: MegidaiColors.primary,
+    return GestureDetector(
+      onLongPress: () => _showGuardianOptions(guardian, guardianIndex),
+      child: Container(
+        width: 220,
+        margin: const EdgeInsets.only(right: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: theme.dividerColor.withOpacity(0.4)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  backgroundColor: MegidaiColors.primary.withOpacity(0.15),
+                  child: Text(
+                    guardian['name']![0],
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: MegidaiColors.primary,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      guardian['name']!,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        guardian['name']!,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        guardian['relation']!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                PopupMenuButton(
+                  onSelected: (value) {
+                    if (value == 'edit') {
+                      _editGuardian(guardian, guardianIndex);
+                    } else if (value == 'delete') {
+                      _deleteGuardian(guardianIndex);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'edit',
+                      child: Row(
+                        children: [
+                          Icon(Icons.edit, size: 18),
+                          SizedBox(width: 8),
+                          Text('Modifier'),
+                        ],
                       ),
                     ),
-                    Text(
-                      guardian['relation']!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                    const PopupMenuItem(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete, size: 18, color: Colors.red),
+                          SizedBox(width: 8),
+                          Text('Supprimer'),
+                        ],
                       ),
                     ),
                   ],
                 ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              guardian['status']!,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: MegidaiColors.success,
+                fontWeight: FontWeight.w600,
               ),
-            ],
+            ),
+            const Spacer(),
+            Row(
+              children: [
+                const Icon(Icons.star, size: 16, color: MegidaiColors.primary),
+                const SizedBox(width: 6),
+                Text(
+                  guardian['score']!,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  '/100',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _editGuardian(Map<String, String> guardian, int index) {
+    _nameController.text = guardian['name']!;
+    _relationController.text = guardian['relation']!;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 24,
+            right: 24,
+            top: 24,
           ),
-          const SizedBox(height: 12),
-          Text(
-            guardian['status']!,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: MegidaiColors.success,
-              fontWeight: FontWeight.w600,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Modifier l\'Ange Gardien',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nom',
+                    prefixIcon: Icon(Icons.person),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _relationController,
+                  decoration: const InputDecoration(
+                    labelText: 'Relation',
+                    prefixIcon: Icon(Icons.group),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final name = _nameController.text.trim();
+                      final relation = _relationController.text.trim();
+                      if (name.isNotEmpty && relation.isNotEmpty) {
+                        setState(() {
+                          _guardians[index] = {
+                            'name': name,
+                            'relation': relation,
+                            'status': _guardians[index]['status']!,
+                            'score': _guardians[index]['score']!,
+                          };
+                        });
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Ange gardien modifié : $name')),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: const Text('Enregistrer'),
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
             ),
           ),
-          const Spacer(),
-          Row(
+        );
+      },
+    );
+  }
+
+  void _deleteGuardian(int index) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Supprimer l\'ange gardien ?'),
+        content: Text(
+          'Êtes-vous sûr de vouloir supprimer ${_guardians[index]['name']} ?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Annuler'),
+          ),
+          TextButton(
+            onPressed: () {
+              final name = _guardians[index]['name']!;
+              setState(() {
+                _guardians.removeAt(index);
+              });
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Ange gardien supp.: $name')),
+              );
+            },
+            child: const Text(
+              'Supprimer',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showGuardianOptions(Map<String, String> guardian, int index) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.info),
+              title: const Text('Détails'),
+              onTap: () {
+                Navigator.of(context).pop();
+                _showGuardianDetails(guardian);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.edit),
+              title: const Text('Modifier'),
+              onTap: () {
+                Navigator.of(context).pop();
+                _editGuardian(guardian, index);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete, color: Colors.red),
+              title: const Text('Supprimer', style: TextStyle(color: Colors.red)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _deleteGuardian(index);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showGuardianDetails(Map<String, String> guardian) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.star, size: 16, color: MegidaiColors.primary),
-              const SizedBox(width: 6),
               Text(
-                guardian['score']!,
-                style: theme.textTheme.titleMedium?.copyWith(
+                'Détails - ${guardian['name']}',
+                style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(width: 4),
-              Text(
-                '/100',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
-                ),
-              ),
+              const SizedBox(height: 20),
+              _buildDetailRow(theme, 'Nom', guardian['name']!),
+              _buildDetailRow(theme, 'Relation', guardian['relation']!),
+              _buildDetailRow(theme, 'Status', guardian['status']!),
+              _buildDetailRow(theme, 'Score', '${guardian['score']!}/100'),
+              const SizedBox(height: 24),
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailRow(ThemeData theme, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+            ),
+          ),
+          Text(
+            value,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ],
       ),
@@ -476,79 +724,150 @@ class _GuardianScreenState extends State<GuardianScreen> {
         levelColor = MegidaiColors.info;
     }
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.dividerColor.withOpacity(0.5),
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: levelColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: Icon(
-              log['icon'],
-              color: levelColor,
-              size: 16,
-            ),
+    return InkWell(
+      onTap: () => _showActivityDetails(log),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: theme.dividerColor.withOpacity(0.5),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  log['who'],
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  log['what'],
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Text(
-                      log['time'],
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
-                        fontSize: 10,
-                      ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: levelColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: Icon(
+                log['icon'],
+                color: levelColor,
+                size: 16,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    log['who'],
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
                     ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: levelColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        log['level'].toUpperCase(),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    log['what'],
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+                        log['time'],
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: levelColor,
-                          fontSize: 8,
-                          fontWeight: FontWeight.w600,
+                          color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                          fontSize: 10,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: levelColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          log['level'].toUpperCase(),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: levelColor,
+                            fontSize: 8,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showActivityDetails(Map<String, dynamic> log) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Détails de l\'activité',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
+              const SizedBox(height: 20),
+              _buildActivityInfoRow(theme, 'Source', log['who']),
+              _buildActivityInfoRow(theme, 'Événement', log['what']),
+              _buildActivityInfoRow(theme, 'Heure', log['time']),
+              _buildActivityInfoRow(theme, 'Niveau', log['level'].toString().toUpperCase()),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: MegidaiColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'Cette activité a été enregistrée par le système de surveillance.',
+                  style: theme.textTheme.bodySmall,
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildActivityInfoRow(ThemeData theme, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+            ),
+          ),
+          Text(
+            value,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
