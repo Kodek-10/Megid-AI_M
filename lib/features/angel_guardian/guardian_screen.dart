@@ -24,32 +24,32 @@ class _GuardianScreenState extends State<GuardianScreen> {
 
   final List<Map<String, dynamic>> _logs = [
     {
-      'who': 'Système',
-      'what': 'Protection activée',
-      'time': '2 min',
-      'level': 'info',
-      'icon': Icons.shield,
+      'who': 'Moteur NLP',
+      'what': 'SMS frauduleux intercepté (Score: 92/100)',
+      'time': 'A l\'instant',
+      'level': 'error',
+      'icon': Icons.dangerous,
     },
     {
-      'who': 'Scanner',
-      'what': 'Site suspect détecté: example.com',
-      'time': '5 min',
-      'level': 'warning',
-      'icon': Icons.warning,
-    },
-    {
-      'who': 'IA',
-      'what': 'Apprentissage terminé',
-      'time': '10 min',
+      'who': 'Ange Gardien',
+      'what': 'Alerte transmise avec succès à Awa Sawadogo',
+      'time': '1 min',
       'level': 'success',
-      'icon': Icons.check_circle,
+      'icon': Icons.security,
     },
     {
-      'who': 'Système',
-      'what': 'Mise à jour de sécurité appliquée',
-      'time': '1h',
+      'who': 'Scanner IA',
+      'what': 'Lien modérément suspect bloqué: promotion.bf',
+      'time': '34 min',
+      'level': 'warning',
+      'icon': Icons.warning_amber,
+    },
+    {
+      'who': 'Audit Fuites',
+      'what': 'Vérification Hebdomadaire HIBP (Aucune fuite)',
+      'time': '3 h',
       'level': 'info',
-      'icon': Icons.update,
+      'icon': Icons.mail_lock,
     },
   ];
 
@@ -202,11 +202,23 @@ class _GuardianScreenState extends State<GuardianScreen> {
           // Logs section
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              'Activités récentes',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Activités récentes',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextButton(
+                  onPressed: _showAllActivities,
+                  style: TextButton.styleFrom(
+                    foregroundColor: theme.primaryColor,
+                  ),
+                  child: const Text('Voir tout'),
+                ),
+              ],
             ),
           ),
 
@@ -384,80 +396,88 @@ class _GuardianScreenState extends State<GuardianScreen> {
     _nameController.text = guardian['name']!;
     _relationController.text = guardian['relation']!;
 
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 24,
-            right: 24,
-            top: 24,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Modifier l\'Ange Gardien',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          elevation: 8,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 400),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Modifier l\'Ange',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nom',
-                    prefixIcon: Icon(Icons.person),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: _relationController,
-                  decoration: const InputDecoration(
-                    labelText: 'Relation',
-                    prefixIcon: Icon(Icons.group),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      final name = _nameController.text.trim();
-                      final relation = _relationController.text.trim();
-                      if (name.isNotEmpty && relation.isNotEmpty) {
-                        setState(() {
-                          _guardians[index] = {
-                            'name': name,
-                            'relation': relation,
-                            'status': _guardians[index]['status']!,
-                            'score': _guardians[index]['score']!,
-                          };
-                        });
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Ange gardien modifié : $name')),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Nom',
+                      prefixIcon: Icon(Icons.person),
                     ),
-                    child: const Text('Enregistrer'),
                   ),
-                ),
-                const SizedBox(height: 24),
-              ],
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _relationController,
+                    decoration: const InputDecoration(
+                      labelText: 'Relation',
+                      prefixIcon: Icon(Icons.group),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final name = _nameController.text.trim();
+                        final relation = _relationController.text.trim();
+                        if (name.isNotEmpty && relation.isNotEmpty) {
+                          setState(() {
+                            _guardians[index] = {
+                              'name': name,
+                              'relation': relation,
+                              'status': guardian['status']!,
+                              'score': guardian['score']!,
+                            };
+                          });
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Modifications enregistrées')),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: const Text('Enregistrer'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -500,70 +520,107 @@ class _GuardianScreenState extends State<GuardianScreen> {
   }
 
   void _showGuardianOptions(Map<String, String> guardian, int index) {
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('Détails'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _showGuardianDetails(guardian);
-              },
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          elevation: 8,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 300),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(24),
             ),
-            ListTile(
-              leading: const Icon(Icons.edit),
-              title: const Text('Modifier'),
-              onTap: () {
-                Navigator.of(context).pop();
-                _editGuardian(guardian, index);
-              },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  child: Text(
+                    'Options',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.info, color: MegidaiColors.info),
+                  title: const Text('Détails'),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _showGuardianDetails(guardian);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.edit, color: MegidaiColors.warning),
+                  title: const Text('Modifier'),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _editGuardian(guardian, index);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.delete, color: MegidaiColors.error),
+                  title: const Text('Supprimer', style: TextStyle(color: MegidaiColors.error)),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _deleteGuardian(index);
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.delete, color: Colors.red),
-              title: const Text('Supprimer', style: TextStyle(color: Colors.red)),
-              onTap: () {
-                Navigator.of(context).pop();
-                _deleteGuardian(index);
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
   void _showGuardianDetails(Map<String, String> guardian) {
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (context) {
         final theme = Theme.of(context);
-        return Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Détails - ${guardian['name']}',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          elevation: 8,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 400),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Détails de l\'Ange',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 20),
-              _buildDetailRow(theme, 'Nom', guardian['name']!),
-              _buildDetailRow(theme, 'Relation', guardian['relation']!),
-              _buildDetailRow(theme, 'Status', guardian['status']!),
-              _buildDetailRow(theme, 'Score', '${guardian['score']!}/100'),
-              const SizedBox(height: 24),
-            ],
+                const SizedBox(height: 20),
+                _buildDetailRow(theme, 'Nom', guardian['name']!),
+                _buildDetailRow(theme, 'Relation', guardian['relation']!),
+                _buildDetailRow(theme, 'Status', guardian['status']!),
+                _buildDetailRow(theme, 'Score', '${guardian['score']!}/100'),
+                const SizedBox(height: 12),
+              ],
+            ),
           ),
         );
       },
@@ -594,81 +651,94 @@ class _GuardianScreenState extends State<GuardianScreen> {
   }
 
   void _openAddGuardianSheet() {
-    showModalBottomSheet(
+    _nameController.clear();
+    _relationController.clear();
+    _phoneController.clear();
+    _noteController.clear();
+
+    showDialog(
       context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 24,
-            right: 24,
-            top: 24,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Ajouter un Ange Gardien',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          elevation: 8,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 400),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Ajouter un Ange',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nom',
-                    prefixIcon: Icon(Icons.person),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: _relationController,
-                  decoration: const InputDecoration(
-                    labelText: 'Relation',
-                    prefixIcon: Icon(Icons.group),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                  decoration: const InputDecoration(
-                    labelText: 'Téléphone',
-                    prefixIcon: Icon(Icons.phone),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: _noteController,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: 'Note',
-                    prefixIcon: Icon(Icons.note),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _addGuardian,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Nom',
+                      prefixIcon: Icon(Icons.person),
                     ),
-                    child: const Text('Enregistrer'),
                   ),
-                ),
-                const SizedBox(height: 24),
-              ],
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _relationController,
+                    decoration: const InputDecoration(
+                      labelText: 'Relation',
+                      prefixIcon: Icon(Icons.group),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      labelText: 'Téléphone',
+                      prefixIcon: Icon(Icons.phone),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _noteController,
+                    maxLines: 2,
+                    decoration: const InputDecoration(
+                      labelText: 'Note',
+                      prefixIcon: Icon(Icons.note),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _addGuardian,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: const Text('Enregistrer'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -807,45 +877,138 @@ class _GuardianScreenState extends State<GuardianScreen> {
     );
   }
 
-  void _showActivityDetails(Map<String, dynamic> log) {
-    showModalBottomSheet(
+  void _showAllActivities() {
+    showDialog(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       builder: (context) {
         final theme = Theme.of(context);
-        return Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Détails de l\'activité',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 400, maxHeight: 600),
+            decoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: MegidaiColors.primary.withOpacity(0.1),
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.history, color: MegidaiColors.primary, size: 28),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          'Toutes les activités',
+                          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              _buildActivityInfoRow(theme, 'Source', log['who']),
-              _buildActivityInfoRow(theme, 'Événement', log['what']),
-              _buildActivityInfoRow(theme, 'Heure', log['time']),
-              _buildActivityInfoRow(theme, 'Niveau', log['level'].toString().toUpperCase()),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: MegidaiColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                Flexible(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _logs.length,
+                    itemBuilder: (context, index) {
+                      return _buildLogItem(_logs[index]);
+                    },
+                  ),
                 ),
-                child: Text(
-                  'Cette activité a été enregistrée par le système de surveillance.',
-                  style: theme.textTheme.bodySmall,
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showActivityDetails(Map<String, dynamic> log) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        Color levelColor;
+        switch (log['level']) {
+          case 'success':
+            levelColor = MegidaiColors.success;
+            break;
+          case 'warning':
+            levelColor = MegidaiColors.warning;
+            break;
+          case 'error':
+            levelColor = MegidaiColors.error;
+            break;
+          default:
+            levelColor = MegidaiColors.info;
+        }
+
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          elevation: 8,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 400),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(log['icon'], color: levelColor, size: 28),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Détails de l\'activité',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 24),
-            ],
+                const SizedBox(height: 20),
+                _buildActivityInfoRow(theme, 'Source', log['who']),
+                _buildActivityInfoRow(theme, 'Événement', log['what']),
+                _buildActivityInfoRow(theme, 'Heure', log['time']),
+                _buildActivityInfoRow(theme, 'Niveau', log['level'].toString().toUpperCase()),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: levelColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: levelColor.withOpacity(0.3)),
+                  ),
+                  child: Text(
+                    'Cette activité a été enregistrée par le système de surveillance.',
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
         );
       },

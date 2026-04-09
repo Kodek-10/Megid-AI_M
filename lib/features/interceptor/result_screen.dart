@@ -28,12 +28,109 @@ class _ResultScreenState extends State<ResultScreen> {
     final gradeColor = _getGradeColor(grade);
     final findings = _getFindings(widget.score);
 
+    final isCritical = widget.score <= 15;
+    final isWarning = widget.score > 15 && widget.score < 80;
+    
+    if (isCritical) {
+      return Scaffold(
+        backgroundColor: MegidaiColors.error,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.close, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.gpp_bad, size: 100, color: Colors.white),
+                const SizedBox(height: 24),
+                Text(
+                  'Urgent : Danger Critique',
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    children: [
+                      const Row(
+                        children: [
+                          Icon(Icons.warning, color: MegidaiColors.error),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Action bloquée automatiquement',
+                              style: TextStyle(fontWeight: FontWeight.bold, color: MegidaiColors.error),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(height: 24),
+                      Row(
+                        children: [
+                          const Text('Type: ', style: TextStyle(fontWeight: FontWeight.w600)),
+                          Text('Phishing ou Site Malveillant détecté', style: TextStyle(color: Colors.grey[700])),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Text('Cible: ', style: TextStyle(fontWeight: FontWeight.w600)),
+                          Expanded(child: Text(widget.url, style: TextStyle(color: Colors.grey[700]), overflow: TextOverflow.ellipsis)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 32),
+                const Text(
+                  'Vos données personnelles et financières sont en grand danger. Quittez cette page immédiatement.',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+                const Spacer(),
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: MegidaiColors.error,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    ),
+                    child: const Text('QUITTER IMMÉDIATEMENT', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Résultat d\'analyse'),
+        backgroundColor: isWarning ? MegidaiColors.warning : MegidaiColors.success,
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
-            icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+            icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode, color: Colors.white),
             onPressed: widget.onThemeToggle,
             tooltip: widget.isDarkMode ? 'Mode jour' : 'Mode nuit',
           ),
@@ -42,24 +139,18 @@ class _ResultScreenState extends State<ResultScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Header
+            // Header (Bandeau)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: theme.brightness == Brightness.dark
-                      ? [MegidaiColors.primary.withOpacity(0.8), MegidaiColors.secondary.withOpacity(0.8)]
-                      : [MegidaiColors.primary, MegidaiColors.secondary],
-                ),
+                color: isWarning ? MegidaiColors.warning : MegidaiColors.success,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Analyse terminée',
+                    isWarning ? 'Risque Modéré' : 'Aucune menace',
                     style: theme.textTheme.headlineMedium?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -67,9 +158,9 @@ class _ResultScreenState extends State<ResultScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Résultats de l\'évaluation de sécurité',
+                    isWarning ? 'L\'utilisateur est informé mais pas bloqué' : 'Bouclier intact. Megidai travaille en arrière-plan',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withOpacity(0.9),
                     ),
                   ),
                 ],

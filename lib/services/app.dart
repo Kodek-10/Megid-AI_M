@@ -7,6 +7,11 @@ import '../features/interceptor/result_screen.dart';      // Résultat d'analyse
 import '../features/angel_guardian/guardian_screen.dart'; // Ange Gardien
 import '../features/resilience/resilience_screen.dart';   // Score de résilience
 import '../features/education/education_screen.dart';     // Modules éducatifs
+import '../features/education/quiz_screen.dart';          // Quiz
+import '../features/resilience/resilience_test_screen.dart';// Test de résilience
+import '../features/resilience/hibp_audit_screen.dart';   // HIBP Audit
+import '../features/resilience/cgu_scanner_screen.dart';  // Nutri-Score CGU
+import '../features/resilience/gamification_screen.dart'; // Gamification (Badges)
 
 // Widget racine — Stateful pour gérer le thème
 class MegidaiApp extends StatefulWidget {
@@ -70,8 +75,43 @@ class _MegidaiAppState extends State<MegidaiApp> {
         ),
       ),
       GoRoute(
+        path: '/resilience_test',
+        builder: (context, state) => ResilienceTestScreen(
+          onThemeToggle: _toggleTheme,
+          isDarkMode: _themeMode == ThemeMode.dark,
+        ),
+      ),
+      GoRoute(
         path: '/education',
         builder: (context, state) => EducationScreen(
+          onThemeToggle: _toggleTheme,
+          isDarkMode: _themeMode == ThemeMode.dark,
+        ),
+      ),
+      GoRoute(
+        path: '/quiz',
+        builder: (context, state) => QuizScreen(
+          onThemeToggle: _toggleTheme,
+          isDarkMode: _themeMode == ThemeMode.dark,
+        ),
+      ),
+      GoRoute(
+        path: '/hibp_audit',
+        builder: (context, state) => HIBPAuditScreen(
+          onThemeToggle: _toggleTheme,
+          isDarkMode: _themeMode == ThemeMode.dark,
+        ),
+      ),
+      GoRoute(
+        path: '/cgu_scanner',
+        builder: (context, state) => CguScannerScreen(
+          onThemeToggle: _toggleTheme,
+          isDarkMode: _themeMode == ThemeMode.dark,
+        ),
+      ),
+      GoRoute(
+        path: '/gamification',
+        builder: (context, state) => GamificationScreen(
           onThemeToggle: _toggleTheme,
           isDarkMode: _themeMode == ThemeMode.dark,
         ),

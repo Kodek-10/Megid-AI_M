@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/bottom_nav.dart';
 import '../../core/theme.dart';
-
 class ResilienceScreen extends StatefulWidget {
   const ResilienceScreen({
     super.key,
@@ -17,65 +17,44 @@ class ResilienceScreen extends StatefulWidget {
 }
 
 class _ResilienceScreenState extends State<ResilienceScreen> {
-  double _resilienceScore = 75.0; // Mock score
-
-  final List<Map<String, dynamic>> _testQuestions = [
-    {
-      'question': 'Utilisez-vous un mot de passe unique pour chaque compte ?',
-      'answers': ['Toujours', 'Souvent', 'Parfois', 'Jamais'],
-      'correctAnswer': 0,
-      'points': 20,
-    },
-    {
-      'question': 'Comment réagissez-vous face à un email suspect ?',
-      'answers': ['Je le signale immédiatement', 'Je l\'ignore et le supprime', 'Je clique pour vérifier', 'Je le transfère'],
-      'correctAnswer': 0,
-      'points': 25,
-    },
-    {
-      'question': 'Avez-vous activé l\'authentification à deux facteurs ?',
-      'answers': ['Sur tous mes comptes', 'Sur les comptes importants', 'Sur un seul compte', 'Non, jamais'],
-      'correctAnswer': 1,
-      'points': 25,
-    },
-    {
-      'question': 'Mettez-vous à jour régulièrement votre téléphone ?',
-      'answers': ['Automatiquement chaque jour', 'Une fois par mois', 'Rarement', 'Jamais'],
-      'correctAnswer': 0,
-      'points': 20,
-    },
-    {
-      'question': 'Comment partagez-vous vos informations personnelles en ligne ?',
-      'answers': ['Avec prudence et sélectivité', 'Facilement', 'Jamais', 'Je ne sais pas'],
-      'correctAnswer': 0,
-      'points': 10,
-    },
-  ];
+  double get _resilienceScore {
+    double total = 0;
+    for (var factor in _factors) {
+      double scorePercent = (factor['score'] as int).toDouble();
+      int points = factor['pts'] as int;
+      total += (scorePercent * points) / 100.0;
+    }
+    return total;
+  }
 
   final List<Map<String, dynamic>> _factors = [
     {
-      'name': 'Connaissance des menaces',
+      'name': 'Santé des accès',
       'score': 80,
-      'description': 'Compréhension des risques en ligne',
-      'icon': Icons.lightbulb,
+      'pts': 30,
+      'description': 'Applications bénéficiant d\'accès non justifiés',
+      'icon': Icons.admin_panel_settings,
     },
     {
-      'name': 'Pratiques sécurisées',
-      'score': 70,
-      'description': 'Utilisation de mots de passe forts',
-      'icon': Icons.lock,
+      'name': 'Exposition aux fuites',
+      'score': 60,
+      'pts': 25,
+      'description': 'Nombre et gravité des fuites HIBP détectées',
+      'icon': Icons.mail_lock,
     },
     {
-      'name': 'Réactivité',
-      'score': 85,
-      'description': 'Capacité à réagir aux menaces',
+      'name': 'Comportement',
+      'score': 90,
+      'pts': 25,
+      'description': 'Réactivité aux alertes, taux de clics suspects',
       'icon': Icons.speed,
     },
     {
-      'name': 'Éducation continue',
-      'score': 65,
-      'description': 'Apprentissage régulier',
-      'icon': Icons.school,
+      'name': 'Bonnes pratiques',
+      'score': 45,
+      'pts': 20,
+      'description': 'Biométrie, mises à jour, modules éducatifs',
+      'icon': Icons.verified_user,
     },
   ];
 
@@ -203,6 +182,39 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
               ),
             ),
 
+            // Dynamic badges
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _buildBadge(
+                      title: 'Forts',
+                      count: _factors.where((f) => (f['score'] as int) >= 80).length,
+                      color: MegidaiColors.success,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _buildBadge(
+                      title: 'Passables',
+                      count: _factors.where((f) => (f['score'] as int) >= 50 && (f['score'] as int) < 80).length,
+                      color: MegidaiColors.warning,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _buildBadge(
+                      title: 'Critiques',
+                      count: _factors.where((f) => (f['score'] as int) < 50).length,
+                      color: MegidaiColors.danger,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
             // Factors
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -229,21 +241,90 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
 
             const SizedBox(height: 24),
 
-            // Action button
+            // Outils d'évaluation
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => _startResilienceTest(),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Système de Gamification',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  child: const Text('Lancer le test de résilience'),
-                ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () => context.push('/gamification'),
+                      icon: const Icon(Icons.emoji_events),
+                      label: const Text('Voir mes Badges et Défis'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: MegidaiColors.primary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Outils Souveraineté Numérique',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () => context.push('/hibp_audit'),
+                      icon: const Icon(Icons.mail_lock),
+                      label: const Text('Audit d\'Exposition aux Fuites'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () => context.push('/cgu_scanner'),
+                      icon: const Icon(Icons.document_scanner),
+                      label: const Text('Vérifier le Nutri-Score des CGU'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: MegidaiColors.accent,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => _startResilienceTest(),
+                      icon: const Icon(Icons.psychology),
+                      label: const Text('Lancer le test de résilience'),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
 
@@ -261,45 +342,91 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
 
     return InkWell(
       onTap: () {
-        showModalBottomSheet(
+        showDialog(
           context: context,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
           builder: (context) {
-            return Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    factor['name'],
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+            return Dialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              elevation: 8,
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 400),
+                decoration: BoxDecoration(
+                  color: theme.scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: _getScoreColor(score.toDouble()).withOpacity(0.1),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(factor['icon'], color: _getScoreColor(score.toDouble()), size: 28),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              factor['name'],
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: _getScoreColor(score.toDouble()),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    factor['description'],
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Score actuel : $score%',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                    Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            factor['description'],
+                            style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
+                          ),
+                          const SizedBox(height: 24),
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: theme.cardColor,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: theme.dividerColor),
+                            ),
+                            child: Row(
+                              children: [
+                                const Text('Score actuel', style: TextStyle(fontWeight: FontWeight.bold)),
+                                const Spacer(),
+                                Text(
+                                  '$score%',
+                                  style: theme.textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: _getScoreColor(score.toDouble()),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          Text(
+                            'Conseil : améliorez ce facteur en suivant les exercices et bonnes pratiques disponibles dans la section Éducation.',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
+                              height: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Conseil : améliorez ce facteur en suivant les exercices et bonnes pratiques disponibles dans la section Éducation.',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                ],
+                  ],
+                ),
               ),
             );
           },
@@ -392,227 +519,100 @@ class _ResilienceScreenState extends State<ResilienceScreen> {
   }
 
   void _startResilienceTest() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    context.push('/resilience_test');
+  }
+
+  Widget _buildBadge({required String title, required int count, required Color color}) {
+    return InkWell(
+      onTap: () => _showFactorsList(title, count, color),
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withOpacity(0.3)),
+        ),
+        child: Column(
+          children: [
+            Text(
+              count.toString(),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              title,
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: color),
+            ),
+          ],
+        ),
       ),
-      builder: (context) {
-        return ResilienceTestWidget(
-          questions: _testQuestions,
-          onTestComplete: (score) {
-            Navigator.of(context).pop();
-            _showTestResults(score);
-          },
-        );
-      },
     );
   }
 
-  void _showTestResults(int score) {
+  void _showFactorsList(String title, int count, Color color) {
+    List<Map<String, dynamic>> filteredList;
+    if (title == 'Forts') {
+      filteredList = _factors.where((f) => (f['score'] as int) >= 80).toList();
+    } else if (title == 'Passables') {
+      filteredList = _factors.where((f) => (f['score'] as int) >= 50 && (f['score'] as int) < 80).toList();
+    } else {
+      filteredList = _factors.where((f) => (f['score'] as int) < 50).toList();
+    }
+
     showDialog(
       context: context,
       builder: (context) {
         final theme = Theme.of(context);
-        return AlertDialog(
-          title: const Text('Résultats du test'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: 100,
-                height: 100,
-                child: Stack(
-                  children: [
-                    CircularProgressIndicator(
-                      value: score / 100,
-                      strokeWidth: 8,
-                      backgroundColor: theme.dividerColor,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        _getScoreColor(score.toDouble()),
-                      ),
-                    ),
-                    Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '$score',
-                            style: theme.textTheme.displaySmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: _getScoreColor(score.toDouble()),
-                            ),
-                          ),
-                          Text(
-                            '/100',
-                            style: theme.textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                _getScoreLabel(score.toDouble()),
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                _getTestResultMessage(score),
-                style: theme.textTheme.bodySmall,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 400, maxHeight: 500),
+            decoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(24),
             ),
-          ],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.category, color: color),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          'Facteurs $title ($count)',
+                          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: color),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: filteredList.length,
+                    itemBuilder: (context, index) {
+                      return _buildFactorCard(filteredList[index]);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
   }
-
-  String _getTestResultMessage(int score) {
-    if (score >= 80) return 'Excellent ! Vous avez une bonne maîtrise des pratiques de sécurité.';
-    if (score >= 60) return 'Bon résultat. Continuez à améliorer vos connaissances de sécurité.';
-    if (score >= 40) return 'Résultat moyen. Suivez les cours pour améliorer vos compétences.';
-    return 'À améliorer. Consultez la section Éducation pour progresser.';
-  }
 }
-
-class ResilienceTestWidget extends StatefulWidget {
-  final List<Map<String, dynamic>> questions;
-  final Function(int) onTestComplete;
-
-  const ResilienceTestWidget({
-    required this.questions,
-    required this.onTestComplete,
-    super.key,
-  });
-
-  @override
-  State<ResilienceTestWidget> createState() => _ResilienceTestWidgetState();
-}
-
-class _ResilienceTestWidgetState extends State<ResilienceTestWidget> {
-  int _currentIndex = 0;
-  int _totalScore = 0;
-
-  void _selectAnswer(int answerIndex) {
-    final question = widget.questions[_currentIndex];
-    final isCorrect = answerIndex == question['correctAnswer'];
-    
-    if (isCorrect) {
-      _totalScore += (question['points'] as int);
-    }
-
-    if (_currentIndex < widget.questions.length - 1) {
-      setState(() {
-        _currentIndex++;
-      });
-    } else {
-      // Calculate final percentage
-      final maxScore = widget.questions.fold<int>(0, (sum, q) => sum + (q['points'] as int));
-      final percentage = ((_totalScore / maxScore) * 100).toInt();
-      widget.onTestComplete(percentage);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final question = widget.questions[_currentIndex];
-    final progress = (_currentIndex + 1) / widget.questions.length;
-
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Progress bar
-          LinearProgressIndicator(
-            value: progress,
-            minHeight: 6,
-            backgroundColor: theme.dividerColor,
-            valueColor: const AlwaysStoppedAnimation<Color>(MegidaiColors.primary),
-          ),
-          const SizedBox(height: 16),
-          
-          // Question counter
-          Text(
-            'Question ${_currentIndex + 1}/${widget.questions.length}',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // Question
-          Text(
-            question['question'],
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Answers
-          ...List.generate(
-            (question['answers'] as List).length,
-            (index) {
-              final answer = question['answers'][index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: InkWell(
-                  onTap: () => _selectAnswer(index),
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: theme.cardColor,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: theme.dividerColor.withOpacity(0.5),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: MegidaiColors.primary,
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            answer,
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
+
