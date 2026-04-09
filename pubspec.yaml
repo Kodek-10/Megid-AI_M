@@ -16,7 +16,7 @@ dependencies:
 
   # ── Lecture des SMS ───────────────────────────────────────────────
   # Accès aux SMS entrants et existants
-  # telephony: ^0.2.0  # Temporairement désactivé pour compatibilité
+  telephony: ^0.2.0
 
   # ── Modèles TFLite (IA locale sur le téléphone) ──────────────────
   # Permet d'exécuter MobileBERT et Random Forest directement sur l'appareil

@@ -140,9 +140,9 @@ class MegidaiTheme {
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return MegidaiColors.primary.withOpacity(0.3);
+            return MegidaiColors.primary.withValues(alpha: 0.3);
           }
-          return MegidaiColors.textGray.withOpacity(0.3);
+          return MegidaiColors.textGray.withValues(alpha: 0.3);
         }),
       ),
 
@@ -310,7 +310,7 @@ class MegidaiTheme {
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return MegidaiColors.primary.withOpacity(0.3);
+            return MegidaiColors.primary.withValues(alpha: 0.3);
           }
           return const Color(0xFFCCCCCC);
         }),
